@@ -6,11 +6,12 @@ import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.With;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
 @Data
-// @With
+@With
 @AllArgsConstructor
 @RequiredArgsConstructor
 // @Builder
@@ -21,6 +22,6 @@ public class Anime {
     private Integer id;
 
     @NotNull
-    @NotEmpty(message = "Name of the enemy can not be empty")
+    @NotEmpty(message = "Name of the Anime can not be empty")
     private String name;
 }

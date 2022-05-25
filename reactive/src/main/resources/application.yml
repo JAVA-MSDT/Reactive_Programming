@@ -13,5 +13,19 @@ spring:
     pool:
       enabled: false
       initial-size: 5
+    # console:
+      # enabled: true
+      # path: /r2dbc-console
+  # h2:
+  #  console:
+  #    enabled: true
+  #    path: /h2-console
+
+logging:
+  level:
+    org:
+      springframework:
+        data:
+          r2dbc: DEBUG
 server:
   port: 8888
