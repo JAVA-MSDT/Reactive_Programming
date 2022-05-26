@@ -3,10 +3,7 @@ package com.javamsdt.reactive.modal;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
-import lombok.With;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -14,7 +11,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @With
 @AllArgsConstructor
 @RequiredArgsConstructor
-// @Builder
+@Builder
 @Table(value = "anime")
 public class Anime {
 
