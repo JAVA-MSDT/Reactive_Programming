@@ -127,4 +127,27 @@ class AnimeServiceTest {
                 .expectError(ResponseStatusException.class)
                 .verify();
     }
+
+    @Test
+    @DisplayName("Update an Anime in the Database when Successful")
+    public void updateAnime_UpdatesAnimeInDB_WhenSuccessful() {
+
+        Anime toBeUpdated = AnimeBuilder.animeToBeUpdated();
+        StepVerifier.create(animeService.updateAnime(toBeUpdated))
+                .expectSubscription()
+                .verifyComplete();
+    }
+
+    @Test
+    @DisplayName("Update an Anime in the Database when Successful")
+    public void updateAnime_ReturnMonoError_WhenFailed() {
+        BDDMockito.when(animeRepository.findById(ArgumentMatchers.anyInt()))
+                .thenReturn(Mono.empty());
+
+        Anime toBeUpdated = AnimeBuilder.animeToBeUpdated();
+        StepVerifier.create(animeService.updateAnime(toBeUpdated))
+                .expectSubscription()
+                .expectError(ResponseStatusException.class)
+                .verify();
+    }
 }
