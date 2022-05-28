@@ -41,7 +41,7 @@ dependencies {
 	// ========================== TESTING ==========================
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'io.projectreactor:reactor-test'
-	testImplementation 'io.projectreactor.tools:blockhound:1.0.0.RELEASE'
+	implementation 'io.projectreactor.tools:blockhound:1.0.0.RELEASE'
 }
 
 tasks.named('test') {

@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(value = "api/anime")
 @RequiredArgsConstructor
@@ -35,6 +37,12 @@ public class AnimeController {
     @ResponseStatus(HttpStatus.CREATED)
     public Mono<Anime> saveAnime(@Valid @RequestBody Anime anime) {
         return animeService.saveAnime(anime);
+    }
+
+    @PostMapping("/batch")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Flux<Anime> batchSaveAnime(@RequestBody List<Anime> anime) {
+        return animeService.batchSaveAnime(anime);
     }
 
     @PutMapping(path = "{id}")
