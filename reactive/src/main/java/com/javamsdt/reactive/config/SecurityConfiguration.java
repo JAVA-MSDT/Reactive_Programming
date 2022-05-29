@@ -1,17 +1,17 @@
 package com.javamsdt.reactive.config;
 
+import com.javamsdt.reactive.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.ReactiveAuthenticationManager;
+import org.springframework.security.authentication.UserDetailsRepositoryReactiveAuthenticationManager;
+import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
-import org.springframework.security.core.userdetails.MapReactiveUserDetailsService;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 
 @EnableWebFluxSecurity
+@EnableReactiveMethodSecurity
 public class SecurityConfiguration {
 
     @Bean
@@ -21,7 +21,8 @@ public class SecurityConfiguration {
                         .csrf().disable()
                         .authorizeExchange()
                         .pathMatchers(HttpMethod.POST, "/api/anime/**").hasRole("ADMIN")
-                        .pathMatchers(HttpMethod.GET).hasAnyRole("USER")
+                        .pathMatchers(HttpMethod.GET, "/api/anime/**").hasRole("USER")
+                        .pathMatchers(HttpMethod.POST, "/api/users/**").permitAll()
                         .anyExchange().authenticated()
                         .and()
                         .formLogin()
@@ -31,20 +32,8 @@ public class SecurityConfiguration {
                         .build();
     }
 
-    // In Memory Security using Form Login Basic Auth
     @Bean
-    public MapReactiveUserDetailsService userDetailsService() {
-        PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-        UserDetails admin = User.withUsername("admin")
-                .password(encoder.encode("admin"))
-                .roles("ADMIN")
-                .build();
-
-        UserDetails user = User.withUsername("user")
-                .password(encoder.encode("user"))
-                .roles("USER")
-                .build();
-
-        return new MapReactiveUserDetailsService(admin, user);
+    ReactiveAuthenticationManager reactiveAuthenticationManager(UserService userService) {
+        return new UserDetailsRepositoryReactiveAuthenticationManager(userService);
     }
 }

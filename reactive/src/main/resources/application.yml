@@ -21,11 +21,11 @@ spring:
   #    enabled: true
   #    path: /h2-console
 
-logging:
-  level:
-    org:
-      springframework:
-        data:
-          r2dbc: DEBUG
+# logging:
+#  level:
+#    org:
+#      springframework:
+#        data:
+#          r2dbc: DEBUG
 server:
   port: 8888
