@@ -38,8 +38,11 @@ dependencies {
 	// ========================== TOOLS ============================
 	runtimeOnly 'org.springframework.boot:spring-boot-devtools'
 
+	// ========================== SECURITY ==========================
+	implementation 'org.springframework.boot:spring-boot-starter-security'
 	// ========================== TESTING ==========================
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.boot:spring-boot-security-test'
 	testImplementation 'io.projectreactor:reactor-test'
 	implementation 'io.projectreactor.tools:blockhound:1.0.0.RELEASE'
 }

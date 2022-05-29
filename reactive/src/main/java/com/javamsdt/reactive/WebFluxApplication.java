@@ -8,7 +8,7 @@ import reactor.blockhound.BlockHound;
 public class WebFluxApplication {
 
     static {
-        BlockHound.install();
+       //  BlockHound.install();
     }
 
     public static void main(String[] args) {
