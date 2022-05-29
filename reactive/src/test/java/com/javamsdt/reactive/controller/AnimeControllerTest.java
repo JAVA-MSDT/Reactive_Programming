@@ -1,5 +1,6 @@
 package com.javamsdt.reactive.controller;
 
+import java.util.List;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 
@@ -33,6 +34,7 @@ class AnimeControllerTest {
     private AnimeService animeService;
 
     private Anime anime = AnimeBuilder.getAnime();
+    private Anime tobSaved = AnimeBuilder.saveAnime();
 
     @BeforeAll
     public static void blockHoundSetup() {
@@ -49,6 +51,9 @@ class AnimeControllerTest {
 
          BDDMockito.when(animeService.saveAnime(ArgumentMatchers.any(Anime.class)))
                 .thenReturn(Mono.just(anime));
+
+        BDDMockito.when(animeService.batchSaveAnime(List.of(tobSaved,tobSaved)))
+                .thenReturn(Flux.just(tobSaved, tobSaved));
 
         BDDMockito.when(animeService.deleteAnime(ArgumentMatchers.anyInt()))
                 .thenReturn(Mono.empty());
@@ -98,10 +103,18 @@ class AnimeControllerTest {
     @Test
     @DisplayName("Save an Anime into the Database when Successful")
     public void saveAnime_StoresAnimeInDB_WhenSuccessful() {
-        Anime tobSaved = AnimeBuilder.saveAnime();
         StepVerifier.create(animeController.saveAnime(tobSaved))
                 .expectSubscription()
                 .expectNext(anime)
+                .verifyComplete();
+    }
+
+    @Test
+    @DisplayName("batchSaveAnime into the Database when Successful")
+    public void batchSaveAnime_StoresListOfAnimeInDB_WhenSuccessful() {
+        StepVerifier.create(animeService.batchSaveAnime(List.of(tobSaved, tobSaved)))
+                .expectSubscription()
+                .expectNext(tobSaved, tobSaved)
                 .verifyComplete();
     }
 

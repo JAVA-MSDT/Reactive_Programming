@@ -1,5 +1,6 @@
 package com.javamsdt.reactive.integration;
 
+import java.util.List;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 
@@ -44,6 +45,7 @@ public class AnimeControllerIT {
     private WebTestClient testClient;
 
     private Anime anime = AnimeBuilder.getAnime();
+    private Anime tobSaved = AnimeBuilder.saveAnime();
 
     @BeforeAll
     public static void blockHoundSetup() {
@@ -60,6 +62,9 @@ public class AnimeControllerIT {
 
         BDDMockito.when(animeRepository.save(ArgumentMatchers.any(Anime.class)))
                 .thenReturn(Mono.just(anime));
+
+        BDDMockito.when(animeRepository.saveAll(List.of(tobSaved,tobSaved)))
+                .thenReturn(Flux.just(tobSaved, tobSaved));
 
         BDDMockito.when(animeRepository.delete(ArgumentMatchers.any(Anime.class)))
                 .thenReturn(Mono.empty());
@@ -154,6 +159,39 @@ public class AnimeControllerIT {
                 .uri("/api/anime")
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromValue(tobSaved))
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody()
+                .jsonPath("$.status").isEqualTo(400);
+    }
+
+    @Test
+    @DisplayName("batchSaveAnime_StoresListOfAnimeInDB_WhenSuccessful")
+    public void batchSaveAnime_StoresListOfAnimeInDB_WhenSuccessful() {
+        testClient
+                .post()
+                .uri("/api/anime/batch")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(List.of(tobSaved, tobSaved)))
+                .exchange()
+                .expectStatus().isCreated()
+                .expectBodyList(Anime.class)
+                .hasSize(2)
+                .contains(tobSaved);
+    }
+
+    @Test
+    @DisplayName("batchSaveAnime_ReturnMonoError_WhenInvalidName")
+    public void batchSaveAnime_ReturnMonoError_WhenInvalidName() {
+
+        BDDMockito.when(animeRepository.saveAll(ArgumentMatchers.anyIterable()))
+                .thenReturn(Flux.just(tobSaved, tobSaved.withName("")));
+
+        testClient
+                .post()
+                .uri("/api/anime/batch")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(List.of(tobSaved, tobSaved.withName(""))))
                 .exchange()
                 .expectStatus().isBadRequest()
                 .expectBody()
